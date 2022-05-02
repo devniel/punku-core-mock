@@ -25,12 +25,14 @@ const signUp = graphql.mutation('signUp', (req, res, ctx) => {
 });
 
 const signIn = graphql.mutation('signIn', (req, res, ctx) => {
-  const { username } = req.variables
+  const { usernameOrEmail } = req.variables
   return res(
     ctx.data({
       user: {
-        username,
+        username: 'username',
+        email: 'email'
       },
+      token: 'token'
     }),
   )
 });
