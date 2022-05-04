@@ -25,7 +25,7 @@ const signUp = graphql.mutation('signUp', (req, res, ctx) => {
 });
 
 const signIn = graphql.mutation('signIn', (req, res, ctx) => {
-  const { usernameOrEmail } = req.variables
+  const { usernameOrEmail } = req.variables?.data;
   return res(
     ctx.data({
       user: {
@@ -36,6 +36,28 @@ const signIn = graphql.mutation('signIn', (req, res, ctx) => {
     }),
   )
 });
+
+const passwordReset = graphql.mutation('passwordReset', (req, res, ctx) => {
+  const { usernameOrEmail } = req.variables?.data;
+  switch(usernameOrEmail){
+    case "bad-username": {
+      return res(
+        ctx.errors([
+          {
+            message: 'A user with the given name or email was not found.',
+            errorType: 'AuthenticationError',
+          },
+        ]),
+      );
+    }
+  }
+  return res(
+    ctx.data({
+      message: 'A message was sent to the related email with instructions to reset your password.'
+    }),
+  )
+});
+
 
 const verifyEmail = graphql.mutation('verifyEmail', (req, res, ctx) => {
   const { username } = req.variables
@@ -48,4 +70,4 @@ const verifyEmail = graphql.mutation('verifyEmail', (req, res, ctx) => {
   )
 });
 
-export const handlers = [signUp, signIn, verifyEmail];
+export const handlers = [signUp, signIn, verifyEmail, passwordReset];
